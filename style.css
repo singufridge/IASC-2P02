@@ -1,0 +1,30 @@
+h1 {
+    font-weight: 800;
+    padding-bottom: 3%;
+
+    border-bottom: 3px dotted rgb(208, 100, 100);
+}
+
+h2 {
+    padding-top: 2%;
+    font-weight: 600;
+}
+
+li {
+    font-size: 16pt;
+}
+
+body {
+    background-color: rgb(215, 184, 188);
+}
+
+a {
+    font-weight: 600;
+    text-decoration: none;
+    color: black;
+    transition: 0.3s;
+}
+
+a:hover {
+    text-shadow: -2px 2px 0 rgb(208, 100, 100);
+}
