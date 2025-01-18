@@ -19,8 +19,8 @@ body {
 }
 
 a {
-    font-weight: 600;
     text-decoration: none;
+    border-bottom: 3px dotted rgba(208, 100, 100, 0.514);
     color: black;
     transition: 0.3s;
 }
