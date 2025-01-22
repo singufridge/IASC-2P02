@@ -16,6 +16,7 @@ const camera = new THREE.PerspectiveCamera(
     100 //far plane
 )
 scene.add(camera)
+camera.position.set(0, 0, 7)
 
 //Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -32,12 +33,15 @@ const sphereMaterial = new THREE.MeshNormalMaterial()
 const testSphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
 
 scene.add(testSphere)
-testSphere.position.set(0, 0, -5)
 /* *** ANIMATION LOOP *** */
 const clock = new THREE.Clock()
 
 const animation = () => {
     //Return elapsed time
+    const elapsedTime = clock.getElapsedTime()
+    //Animate testSphere
+    testSphere.position.z = Math.sin(elapsedTime)
+    testSphere.position.x = Math.cos(elapsedTime)
     //Render
     renderer.render(scene, camera)
     //Request next frame
