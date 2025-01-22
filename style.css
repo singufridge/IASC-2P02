@@ -15,16 +15,30 @@ li {
 }
 
 body {
-    background-color: rgb(215, 184, 188);
+    background-color: #d7b8bc;
 }
 
 a {
     text-decoration: none;
-    border-bottom: 3px dotted rgba(208, 100, 100, 0.514);
+    border-bottom: 3px dotted #d0646483;
     color: black;
     transition: 0.3s;
 }
 
 a:hover {
-    text-shadow: -2px 2px 0 rgb(208, 100, 100);
+    text-shadow: -2px 2px 0 #d06464;
+}
+
+.title {
+    font-size: 48pt;
+    text-align: center;
+    font-weight: 700;
+}
+
+.webgl {
+    position: absolute;
+    top: 0;
+    left: 0;
+    outline: none;
+    z-index: -1;
 }
