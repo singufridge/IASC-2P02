@@ -31,19 +31,37 @@ renderer.setSize(window.innerWidth, window.innerHeight)
 const sphereGeometry = new THREE.SphereGeometry(1)
 const sphereMaterial = new THREE.MeshNormalMaterial()
 const testSphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
-
 scene.add(testSphere)
+
+//torus
+const torusGeometry = new THREE.TorusGeometry(3, .3, 16, 100)
+const torusMaterial = new THREE.MeshNormalMaterial()
+const testTorus = new THREE.Mesh(torusGeometry, torusMaterial)
+scene.add(testTorus)
+
 /* *** ANIMATION LOOP *** */
 const clock = new THREE.Clock()
 
 const animation = () => {
     //Return elapsed time
     const elapsedTime = clock.getElapsedTime()
+
     //Animate testSphere
-    testSphere.position.z = Math.sin(elapsedTime)
-    testSphere.position.x = Math.cos(elapsedTime)
+    const speed = 1.5
+    const distance = 1.5
+    testSphere.position.z = Math.sin(elapsedTime * speed) * distance
+    testSphere.position.x = Math.cos(elapsedTime * speed) * distance
+
+    testSphere.rotation.y = elapsedTime * speed
+
+    const scale = Math.sin(elapsedTime * speed)
+    //testSphere.scale.y = scale
+
+    //Animate torus
+    testTorus.rotation.y = elapsedTime * speed
     //Render
     renderer.render(scene, camera)
+    
     //Request next frame
     window.requestAnimationFrame(animation) //runs function on a loop
 }
