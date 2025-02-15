@@ -53,14 +53,35 @@ cave.receiveShadow = true
 scene.add(cave)
 
 // Objects
-// Torus knot
-const knotGeometry = new THREE.TorusKnotGeometry(1, 0.2);
-const knotMaterial = new THREE.MeshNormalMaterial()
-const torusKnot = new THREE.Mesh(knotGeometry, knotMaterial)
+// Torus
+const torusGeometry = new THREE.TorusGeometry(
+    1.2,
+    .3,
+    10,
+    20,
+    3.2
+)
+const torusMaterial = new THREE.MeshNormalMaterial()
+const torusSmile = new THREE.Mesh(torusGeometry, torusMaterial)
 
-torusKnot.position.set(6, 1, 0)
-torusKnot.castShadow = true
-scene.add(torusKnot)
+torusSmile.position.set(6, .8, 0)
+torusSmile.rotation.y = Math.PI * .5;
+torusSmile.rotation.x = Math.PI;
+torusSmile.castShadow = true
+scene.add(torusSmile)
+
+// Eye Spheres
+const eyeGeometry = new THREE.SphereGeometry(.45);
+const eyeMaterial = new THREE.MeshNormalMaterial()
+const eyeOne = new THREE.Mesh(eyeGeometry, eyeMaterial)
+const eyeTwo = new THREE.Mesh(eyeGeometry, eyeMaterial)
+
+eyeOne.castShadow = true
+eyeTwo.castShadow = true
+eyeOne.position.set(6, 2, .8)
+eyeTwo.position.set(6, 2, -.8)
+scene.add(eyeOne)
+scene.add(eyeTwo)
 
 /* *** LIGHTS *** */
 // Ambient Light
@@ -110,8 +131,10 @@ const animation = () => {
     const elapsedTime = clock.getElapsedTime()
 
     // Animate Objects
-    torusKnot.rotation.y = elapsedTime;
-    torusKnot.rotation.z = elapsedTime;
+    /*
+    torusSmile.rotation.y = elapsedTime;
+    torusSmile.rotation.z = elapsedTime;
+    */
 
     //Update OrbitControls
     controls.update()
