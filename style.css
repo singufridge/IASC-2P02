@@ -35,10 +35,35 @@ a:hover {
     font-weight: 700;
 }
 
+.flexbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 95%;
+    margin: 0 auto;
+    z-index: 1;
+}
+
 .webgl {
-    position: absolute;
+    position: relative;
     top: 0;
     left: 0;
     outline: none;
-    z-index: -1;
+    z-index: 2;
+}
+
+.essay {
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 24px;
+    width: 100%;
+}
+
+.clickable {
+    color: #d06464;
+    cursor: pointer;
+}
+
+.clickable:hover {
+    color: #a02f2f;
 }
