@@ -125,7 +125,8 @@ mobile.add(stringSeven)
 mobile.add(stringEight)
 
 scene.add(mobile)
-mobile.position.set(3, 0, 0)
+mobile.position.set(5, 0, 0)
+mobile.rotation.z = Math.PI * .5;
 
 /* *** LIGHTS *** */
 // Ambient Light
@@ -142,7 +143,7 @@ directionalLight.shadow.mapSize.height = 2048
 
 /* *** DOM INTERACTIONS *** */
 const domObj = {
-    part: 2,
+    part: 1,
     firstChange: false,
     secondChange: false,
     thirdChange: false,
@@ -198,22 +199,23 @@ const animation = () => {
 
     // first change
     if(domObj.firstChange) {
-        mobile.rotation.y = elapsedTime;
+        mobile.rotation.z = 0;
     }
 
     // second change
     if(domObj.secondChange) {
-        disc.rotation.z = elapsedTime;
+        mobile.rotation.z = Math.sin(elapsedTime);
     }
 
     // third change
     if(domObj.thirdChange) {
-        disc.rotation.x = elapsedTime;
+        mobile.rotation.z = 0;
+        mobile.rotation.y = elapsedTime;
     }
 
     // fourth change
     if(domObj.fourthChange) {
-        disc.position.z = Math.sin(elapsedTime * 1.5) * 2;
+        directionalLight.position.set(12, 7, -3)
     }
 
     //Update OrbitControls
