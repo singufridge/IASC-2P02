@@ -25,6 +25,7 @@ const camera = new THREE.PerspectiveCamera(
     100 //far plane
 )
 scene.add(camera)
+camera.position.set(10, 2, 7.5)
 
 //Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -50,54 +51,90 @@ const planeMat = new THREE.MeshStandardMaterial({
 const cave = new THREE.Mesh(planeGeo, planeMat)
 cave.rotation.y = Math.PI * .5;
 cave.receiveShadow = true
+cave.position.set(-8, 0, 0)
 scene.add(cave)
 
 // Objects
-// Torus
-const torusGeometry = new THREE.TorusGeometry(
-    1.2,
+const mobile = new THREE.Group();
+
+// Disc
+const discGeo = new THREE.CylinderGeometry(
+    2,
+    2,
     .3,
-    10,
-    20,
-    3.2
+    32
 )
-const torusMaterial = new THREE.MeshNormalMaterial()
-const torusSmile = new THREE.Mesh(torusGeometry, torusMaterial)
+const discMat = new THREE.MeshNormalMaterial()
+const disc = new THREE.Mesh(discGeo, discMat)
 
-torusSmile.position.set(8, .8, 0)
-torusSmile.rotation.y = Math.PI * .5;
-torusSmile.rotation.x = Math.PI;
-torusSmile.castShadow = true
-scene.add(torusSmile)
+disc.position.set(0, 2, 0)
+disc.castShadow = true
+mobile.add(disc)
 
-// Eye Spheres
-const eyeGeometry = new THREE.SphereGeometry(.45);
-const eyeMaterial = new THREE.MeshNormalMaterial()
-const eyeOne = new THREE.Mesh(eyeGeometry, eyeMaterial)
-const eyeTwo = new THREE.Mesh(eyeGeometry, eyeMaterial)
+// Strings
+const stringGeo = new THREE.CylinderGeometry(
+    .15,
+    .15,
+    4,
+    10
+);
+const stringMat = new THREE.MeshNormalMaterial()
 
-eyeOne.castShadow = true
-eyeTwo.castShadow = true
-eyeOne.position.set(8, 2, .8)
-eyeTwo.position.set(8, 2, -.8)
-scene.add(eyeOne)
-scene.add(eyeTwo)
+// front pair
+const stringOne = new THREE.Mesh(stringGeo, stringMat)
+const stringTwo = new THREE.Mesh(stringGeo, stringMat)
+stringOne.castShadow = true
+stringTwo.castShadow = true
+stringOne.position.set(-1.3, 0, .5)
+stringTwo.position.set(-1.3, 0, -.5)
+
+// mid pair near
+const stringThree = new THREE.Mesh(stringGeo, stringMat)
+const stringFour = new THREE.Mesh(stringGeo, stringMat)
+stringThree.castShadow = true
+stringFour.castShadow = true
+stringThree.position.set(-.5, 0, 1.3)
+stringFour.position.set(-.5, 0, -1.3)
+
+// mid pair far
+const stringFive = new THREE.Mesh(stringGeo, stringMat)
+const stringSix = new THREE.Mesh(stringGeo, stringMat)
+stringFive.castShadow = true
+stringSix.castShadow = true
+stringFive.position.set(.5, 0, 1.3)
+stringSix.position.set(.5, 0, -1.3)
+
+//back pair
+const stringSeven = new THREE.Mesh(stringGeo, stringMat)
+const stringEight = new THREE.Mesh(stringGeo, stringMat)
+stringSeven.castShadow = true
+stringEight.castShadow = true
+stringSeven.position.set(1.3, 0, .5)
+stringEight.position.set(1.3, 0, -.5)
+
+mobile.add(stringOne)
+mobile.add(stringTwo)
+
+mobile.add(stringThree)
+mobile.add(stringFour)
+
+mobile.add(stringFive)
+mobile.add(stringSix)
+
+mobile.add(stringSeven)
+mobile.add(stringEight)
+
+scene.add(mobile)
+mobile.position.set(3, 0, 0)
 
 /* *** LIGHTS *** */
 // Ambient Light
-/*
-const ambientLight = new THREE.AmbientLight(
-    new THREE.Color('white')
-)
-scene.add(ambientLight)
-*/
-
 const directionalLight = new THREE.DirectionalLight(
     new THREE.Color('white'),
     0.5
 )
 scene.add(directionalLight)
-directionalLight.position.set(20, 4, 0)
+directionalLight.position.set(12, 0, 0)
 directionalLight.target = cave
 directionalLight.castShadow = true
 directionalLight.shadow.mapSize.width = 2048
@@ -142,26 +179,6 @@ document.querySelector('#fourth-change').onclick = function() {
     domObj.fourthChange = true
 }
 
-/* *** UI *** 
-//UI
-const ui = new dat.GUI()
-
-const lightPosFolder = ui.addFolder('Light Position')
-
-lightPosFolder
-    .add(directionalLight.position, 'y')
-    .min(-10)
-    .max(10)
-    .step(.1)
-    .name('Y')
-
-lightPosFolder
-    .add(directionalLight.position, 'z')
-    .min(-10)
-    .max(10)
-    .step(.1)
-    .name('Z')
-*/
 /* *** ANIMATION LOOP *** */
 const clock = new THREE.Clock()
 
@@ -171,33 +188,32 @@ const animation = () => {
 
     // part-one
     if(domObj.part === 1) {
-        camera.position.set(7, 0, 0)
-        camera.lookAt(0, 0, 0)
+        camera.position.set(1, 0, 0)
     }
 
     // part-two
     if(domObj.part === 2) {
-        camera.position.set(20, -5, 0)
+        camera.position.set(12, -2, 5)
     }
 
     // first change
     if(domObj.firstChange) {
-        torusSmile.rotation.y = elapsedTime;
+        mobile.rotation.y = elapsedTime;
     }
 
     // second change
     if(domObj.secondChange) {
-        torusSmile.rotation.z = elapsedTime;
+        disc.rotation.z = elapsedTime;
     }
 
     // third change
     if(domObj.thirdChange) {
-        torusSmile.rotation.x = elapsedTime;
+        disc.rotation.x = elapsedTime;
     }
 
     // fourth change
     if(domObj.fourthChange) {
-        torusSmile.position.z = Math.sin(elapsedTime * 1.5) * 2;
+        disc.position.z = Math.sin(elapsedTime * 1.5) * 2;
     }
 
     //Update OrbitControls
