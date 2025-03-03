@@ -204,13 +204,12 @@ const animation = () => {
 
     // second change
     if(domObj.secondChange) {
-        mobile.rotation.z = Math.sin(elapsedTime);
+        mobile.rotation.y = elapsedTime;
     }
 
     // third change
     if(domObj.thirdChange) {
-        mobile.rotation.z = 0;
-        mobile.rotation.y = elapsedTime;
+        mobile.position.z = Math.sin(elapsedTime);
     }
 
     // fourth change

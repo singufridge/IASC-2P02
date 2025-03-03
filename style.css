@@ -55,8 +55,9 @@ a:hover {
 .essay {
     color: white;
     font-family: 'Times New Roman', Times, serif;
-    font-size: 24px;
+    font-size: 23px;
     width: 100%;
+    padding-right: 30px;
 }
 
 .clickable {
