@@ -68,3 +68,8 @@ a:hover {
 .clickable:hover {
     color: #a02f2f;
 }
+
+.terms {
+    text-align: center;
+    font-weight: 700;
+}

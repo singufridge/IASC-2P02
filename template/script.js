@@ -4,10 +4,26 @@ import { OrbitControls } from "OrbitControls";
 
 /* *** SETUP *** */
 const sizes = {
-    width: window.innerWidth - 5,
-    height: window.innerHeight - 5,
+    width: window.innerWidth,
+    height: window.innerHeight,
     aspectRatio: window.innerWidth / window.innerHeight
 }
+
+// Resizing
+window.addEventListener('resize', () => {
+    // Update sizes
+    sizes.width = window.innerWidth
+    sizes.height = window.innerHeight
+    sizes.aspectRatio = window.innerWidth / window.innerHeight
+
+    // Update Camera
+    camera.aspect = sizes.aspectRatio
+    camera.updateProjectionMatrix()
+
+    // Update Renderer
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
 
 /* *** SCENE *** */
 //Canvas
