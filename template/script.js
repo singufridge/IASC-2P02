@@ -50,7 +50,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 
 // Controls
-const controls = new OrbitControls(camera, renderer.canvas)
+const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
 /* *** MESHES *** */

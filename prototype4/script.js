@@ -41,7 +41,7 @@ const camera = new THREE.PerspectiveCamera(
     100 //far plane
 )
 scene.add(camera)
-camera.position.set(0, 2, -12)
+camera.position.set(25, 15, 0)
 
 //Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -51,7 +51,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 
 // Controls
-const controls = new OrbitControls(camera, renderer.canvas)
+const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
 /* *** LIGHTS *** */
@@ -76,7 +76,7 @@ const drawCube = (height, color) => {
     // Position Cube
     cube.position.x = (Math.random() - 0.5) * 10
     cube.position.z = (Math.random() - 0.5) * 10
-    cube.position.y = height - 2
+    cube.position.y = height - 4
 
     // Random Cube Rotation
     cube.rotation.x = Math.random() * 2 * Math.PI
@@ -87,19 +87,13 @@ const drawCube = (height, color) => {
     scene.add(cube)
 }
 
-/*
-drawCube(-1,'blue')
-drawCube(0,'red')
-drawCube(1,'yellow')
-*/
-
 /* *** UI *** */
 //UI
 const ui = new dat.GUI()
 
 /* *** TEXT ANALYSIS *** */
 // Source Text
-const sourceText = "The quick brown fox jumped over the lazy dog."
+const sourceText = "Once, there was a brave tarnished warrior who set out across The Lands Between to become Elden Lord. Along her journey, she encountered all manner of creatures and gods who wanted to impede her journey, seeing her, a tarnished, as inferior. However. she persevered, becoming strong enough to brave the trials ahead, and eventually claim the throne of the Elden Lord for herself."
 
 // Variables
 let parsedText, tokenizedText
@@ -126,17 +120,17 @@ const findSearch = (term, color) => {
             const height = (100 / tokenizedText.length) * i * 0.2
 
             // Call drawCube 100x using converted height
-            for(let a = 0; a < 100; a++) {
-                drawCube(i, color)
+            for(let a = 0; a < 150; a++) {
+                drawCube(height, color)
             }
         }
     }
 }
 
 tokenizeSrcTxt()
-findSearch('the', 'pink')
-findSearch('lazy', 'white')
-findSearch('brown', 'red')
+findSearch('brave', 'red')
+findSearch('tarnished', 'black')
+findSearch('lord', 'gold')
 
 /* *** ANIMATION LOOP *** */
 const clock = new THREE.Clock()
