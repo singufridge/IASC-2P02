@@ -25,6 +25,8 @@ window.addEventListener('resize', () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 })
 
+
+
 /* *** SCENE *** */
 //Canvas
 const canvas = document.querySelector('.webgl')
@@ -61,31 +63,42 @@ scene.add(directionalLight)
 
 /* *** MESHES *** */
 // Cube
-const cubeGeometry = new THREE.BoxGeometry(.5, .5, .5)
+const cubeGeometry = new THREE.BoxGeometry(.3, .3, .3)
 
-const drawCube = (height, color) => {
+const drawCube = (height, params) => {
     
     // Create Material
     const material = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color)
+        color: new THREE.Color(params.color)
     })
 
     // Create Cube
     const cube = new THREE.Mesh(cubeGeometry, material)
 
+    // Scale Cube
+    cube.scale.y = params.scale
+    cube.scale.x = params.scale
+    cube.scale.z = params.scale
+
     // Position Cube
-    cube.position.x = (Math.random() - 0.5) * 10
-    cube.position.z = (Math.random() - 0.5) * 10
+    cube.position.x = (Math.random() - 0.5) * params.diameter
+    cube.position.z = (Math.random() - 0.5) * params.diameter
     cube.position.y = height - 4
 
     // Random Cube Rotation
-    cube.rotation.x = Math.random() * 2 * Math.PI
-    cube.rotation.y = Math.random() * 2 * Math.PI
-    cube.rotation.z = Math.random() * 2 * Math.PI
+    if (params.rotation == 1) { // rotate at random
+        cube.rotation.x = Math.random() * 2 * Math.PI
+        cube.rotation.y = Math.random() * 2 * Math.PI
+        cube.rotation.z = Math.random() * 2 * Math.PI
 
-    // Add cube
-    scene.add(cube)
+    } else if (params.rotation == 2) { // objects face the center
+        cube.lookAt(0, height, 0)
+    }
+
+    params.group.add(cube)
 }
+
+
 
 /* *** UI *** */
 //UI
@@ -93,20 +106,50 @@ const ui = new dat.GUI()
 
 let preset = {}
 
+// Groups
+const group1 = new THREE.Group()
+scene.add(group1)
+const group2 = new THREE.Group()
+scene.add(group2)
+const group3 = new THREE.Group()
+scene.add(group3)
+
 const uiObj = {
     sourceText: "Here is my source text.",
     saveSourceText() {
         saveSourceText()
     },
-    term1: 'this',
-    color1: '#aa00ff',
-    term2: 'source',
-    color2: '#00ffaa',
-    term3: '',
-    color3: '',
+    term1: {
+        term: 'shire',
+        color: '#599532',
+        group: group1,
+        diameter: 8,
+        nCubes: 300,
+        rotation: 1,
+        scale: .8
+    },
+    term2: {
+        term: 'mordor',
+        color: '#2C2625',
+        group: group2,
+        diameter: 12,
+        nCubes: 80,
+        rotation: 2,
+        scale: 1.5
+    },
+    term3: {
+        term: 'sauron',
+        color: '#C44332',
+        group: group3,
+        diameter: 10,
+        nCubes: 100,
+        rotation: 0,
+        scale: 1
+    },
     saveTerms() {
         saveTerms()
-    }
+    },
+    rotateCamera: false
 }
 
 // UI Functions
@@ -125,11 +168,12 @@ const saveTerms = () => {
     // UI
     preset = ui.save
     visualizeFolder.hide()
+    cameraFolder.show()
 
     // Text Analysis
-    findSearch(uiObj.term1, uiObj.color1)
-    findSearch(uiObj.term2, uiObj.color2)
-    findSearch(uiObj.term3, uiObj.color3)
+    findSearch(uiObj.term1)
+    findSearch(uiObj.term2)
+    findSearch(uiObj.term3)
 }
 
 // Text
@@ -148,29 +192,40 @@ textFolder
 const termsFolder = ui.addFolder("Search Terms")
 
 termsFolder
-    .add(uiObj, 'term1')
+    .add(uiObj.term1, 'term')
     .name("Term 1")
 
 termsFolder
-    .addColor(uiObj, 'color1')
+    .addColor(uiObj.term1, 'color')
     .name("Term 1 Color")
 
 termsFolder
-    .add(uiObj, 'term2')
+    .add(group1, 'visible')
+    .name('Term 1 Visibility')
+
+termsFolder
+    .add(uiObj.term2, 'term')
     .name("Term 2")
 
 termsFolder
-    .addColor(uiObj, 'color2')
+    .addColor(uiObj.term2, 'color')
     .name("Term 2 Color")
 
 termsFolder
-    .add(uiObj, 'term3')
+    .add(group2, 'visible')
+    .name('Term 2 Visibility')
+
+termsFolder
+    .add(uiObj.term3, 'term')
     .name("Term 3")
 
 termsFolder
-    .addColor(uiObj, 'color3')
+    .addColor(uiObj.term3, 'color')
     .name("Term 3 Color")
 
+termsFolder
+    .add(group3, 'visible')
+    .name('Term 3 Visibility')
 
 // Visualize
 const visualizeFolder = ui.addFolder("Visualize")
@@ -179,8 +234,16 @@ visualizeFolder
     .add(uiObj, 'saveTerms')
     .name("Visualize")
 
+// Camera
+const cameraFolder = ui.addFolder("Camera")
+
+cameraFolder
+    .add(uiObj, 'rotateCamera')
+    .name('Turntable')
+
 termsFolder.hide()
 visualizeFolder.hide()
+cameraFolder.hide()
 
 /* *** TEXT ANALYSIS *** */
 // Variables
@@ -196,28 +259,23 @@ const tokenizeSrcTxt = (sourceText) => {
 }
 
 // Find searchTerm in tokenizedText
-const findSearch = (term, color) => {
+const findSearch = (params) => {
 
     // Identify term using for loop
     for (let i = 0; i < tokenizedText.length; i++) {
-        if (tokenizedText[i] === term) {
+        if (tokenizedText[i] === params.term) {
             // Convert i into height, between 0-20
             const height = (100 / tokenizedText.length) * i * 0.2
 
-            // Call drawCube 100x using converted height
-            for(let a = 0; a < 150; a++) {
-                drawCube(height, color)
+            // Call drawCube nCube times using converted height
+            for(let a = 0; a < params.nCubes; a++) {
+                drawCube(height, params)
             }
         }
     }
 }
 
 tokenizeSrcTxt("Here is my sourceText")
-/*
-findSearch('brave', 'red')
-findSearch('tarnished', 'black')
-findSearch('lord', 'gold')
-*/
 
 /* *** ANIMATION LOOP *** */
 const clock = new THREE.Clock()
@@ -228,6 +286,14 @@ const animation = () => {
 
     //Update OrbitControls
     controls.update()
+
+    // Rotate Camera
+    if (uiObj.rotateCamera) {
+        camera.position.x = Math.sin(elapsedTime * 0.1) * 27
+        camera.position.z = Math.cos(elapsedTime * 0.1) * 27
+        camera.position.y = 10
+        camera.lookAt(0, 0, 0)
+    }
 
     //Render
     renderer.render(scene, camera)
