@@ -62,15 +62,26 @@ const directionalLight = new THREE.DirectionalLight(0x404040, 100)
 scene.add(directionalLight)
 
 /* *** MESHES *** */
-// Cube
-const cubeGeometry = new THREE.BoxGeometry(.3, .3, .3)
-
 const drawCube = (height, params) => {
     
+    let cubeGeometry
+
+    // Ceate Shape
+    if (params.shape == 0) {
+        cubeGeometry = new THREE.BoxGeometry(.3, .3, .3)
+    } else if (params.shape == 1) {
+        cubeGeometry = new THREE.SphereGeometry(.3, 7, 4)
+    }
+
     // Create Material
     const material = new THREE.MeshStandardMaterial({
         color: new THREE.Color(params.color)
     })
+
+    // Wireframe
+    if (params.wireframe) {
+        material.wireframe = true
+    }
 
     // Create Cube
     const cube = new THREE.Mesh(cubeGeometry, material)
@@ -80,10 +91,21 @@ const drawCube = (height, params) => {
     cube.scale.x = params.scale
     cube.scale.z = params.scale
 
+    // Dynamic Diameter
+    let diameter = 0
+
+    if (params.dynamicDiameter == 0) {
+        diameter = params.diameter
+    } else if (params.dynamicDiameter == 1) {
+        diameter = params.diameter + (height * 0.4)
+    } else if (params.dynamicDiameter == -1) {
+        diameter = params.diameter - (height * 0.4)
+    }
+
     // Position Cube
-    cube.position.x = (Math.random() - 0.5) * params.diameter
-    cube.position.z = (Math.random() - 0.5) * params.diameter
-    cube.position.y = height - 4
+    cube.position.x = (Math.random() - 0.5) * diameter
+    cube.position.z = (Math.random() - 0.5) * diameter
+    cube.position.y = height - 5
 
     // Random Cube Rotation
     if (params.rotation == 1) { // rotate at random
@@ -122,29 +144,38 @@ const uiObj = {
     term1: {
         term: 'shire',
         color: '#599532',
+        shape: 1,
         group: group1,
-        diameter: 8,
-        nCubes: 300,
+        diameter: 20,
+        dynamicDiameter: -1,
+        nCubes: 100,
         rotation: 1,
-        scale: .8
+        scale: 1,
+        wireframe: false
     },
     term2: {
         term: 'mordor',
         color: '#2C2625',
+        shape: 0,
         group: group2,
         diameter: 12,
+        dynamicDiameter: 1,
         nCubes: 80,
         rotation: 2,
-        scale: 1.5
+        scale: 1.5,
+        wireframe: true
     },
     term3: {
-        term: 'sauron',
-        color: '#C44332',
+        term: 'fellowship',
+        color: '#FFA31E',
+        shape: 0,
         group: group3,
-        diameter: 10,
-        nCubes: 100,
-        rotation: 0,
-        scale: 1
+        diameter: 8,
+        dynamicDiameter: 0,
+        nCubes: 50,
+        rotation: 1,
+        scale: 1,
+        wireframe: false
     },
     saveTerms() {
         saveTerms()
@@ -286,6 +317,9 @@ const animation = () => {
 
     //Update OrbitControls
     controls.update()
+
+    // Animate Terms
+    // Term 2
 
     // Rotate Camera
     if (uiObj.rotateCamera) {
