@@ -68,7 +68,7 @@ const drawCube = (height, params) => {
 
     // Ceate Shape
     if (params.shape == 0) {
-        cubeGeometry = new THREE.TorusGeometry(.3, .15, 7, 20)
+        cubeGeometry = new THREE.TorusGeometry(.3, .1, 7, 20)
     } else if (params.shape == 1) {
         cubeGeometry = new THREE.SphereGeometry(.3, 7, 4)
     } else if (params.shape == 2) {
@@ -195,7 +195,7 @@ const uiObj = {
         nCubes: 1,
         rotation: 0,
         randomizedScale: false,
-        scale: 2.5,
+        scale: 2.3,
         opacity: 1.0
     },
     saveTerms() {
@@ -341,7 +341,7 @@ const animation = () => {
 
     // Animate Terms
     // Term 3
-    group3.rotation.y = elapsedTime * 0.5
+    group3.rotation.y = elapsedTime * 0.3
 
     // Rotate Camera
     if (uiObj.rotateCamera) {
