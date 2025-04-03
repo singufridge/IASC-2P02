@@ -68,28 +68,44 @@ const drawCube = (height, params) => {
 
     // Ceate Shape
     if (params.shape == 0) {
-        cubeGeometry = new THREE.BoxGeometry(.3, .3, .3)
+        cubeGeometry = new THREE.TorusGeometry(.3, .15, 7, 20)
     } else if (params.shape == 1) {
         cubeGeometry = new THREE.SphereGeometry(.3, 7, 4)
+    } else if (params.shape == 2) {
+        cubeGeometry = new THREE.OctahedronGeometry(.3, 0)
     }
 
     // Create Material
-    const material = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(params.color)
-    })
+    let material
 
-    // Wireframe
-    if (params.wireframe) {
-        material.wireframe = true
+    if (params.shape == 0) {
+        material = new THREE.MeshLambertMaterial({
+            emissive: new THREE.Color(params.color),
+            emissiveIntensity: 2
+        })
+    } else {
+        material = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(params.color),
+            opacity: params.opacity
+        })
     }
+
+    // Opacity
+    material.transparent = true
 
     // Create Cube
     const cube = new THREE.Mesh(cubeGeometry, material)
 
     // Scale Cube
-    cube.scale.y = params.scale
-    cube.scale.x = params.scale
-    cube.scale.z = params.scale
+    let size = params.scale
+
+    if (params.randomizedScale) {
+        size = (Math.random() + params.scale)
+    }
+
+    cube.scale.y = size
+    cube.scale.x = size
+    cube.scale.z = size
 
     // Dynamic Diameter
     let diameter = 0
@@ -97,9 +113,9 @@ const drawCube = (height, params) => {
     if (params.dynamicDiameter == 0) {
         diameter = params.diameter
     } else if (params.dynamicDiameter == 1) {
-        diameter = params.diameter + (height * 0.4)
+        diameter = params.diameter + (height * 0.6)
     } else if (params.dynamicDiameter == -1) {
-        diameter = params.diameter - (height * 0.4)
+        diameter = params.diameter - (height * 0.6)
     }
 
     // Position Cube
@@ -108,7 +124,9 @@ const drawCube = (height, params) => {
     cube.position.y = height - 5
 
     // Random Cube Rotation
-    if (params.rotation == 1) { // rotate at random
+    if (params.rotation == 0) {
+        cube.rotation.x = Math.PI * 0.5
+    } else if (params.rotation == 1) { // rotate at random
         cube.rotation.x = Math.random() * 2 * Math.PI
         cube.rotation.y = Math.random() * 2 * Math.PI
         cube.rotation.z = Math.random() * 2 * Math.PI
@@ -146,36 +164,39 @@ const uiObj = {
         color: '#599532',
         shape: 1,
         group: group1,
-        diameter: 20,
+        diameter: 22,
         dynamicDiameter: -1,
         nCubes: 100,
         rotation: 1,
-        scale: 1,
-        wireframe: false
+        randomizedScale: true,
+        scale: 0.8,
+        opacity: 1.0
     },
     term2: {
         term: 'mordor',
         color: '#2C2625',
-        shape: 0,
+        shape: 2,
         group: group2,
-        diameter: 12,
+        diameter: 10,
         dynamicDiameter: 1,
-        nCubes: 80,
+        nCubes: 100,
         rotation: 2,
-        scale: 1.5,
-        wireframe: true
+        randomizedScale: false,
+        scale: 1.8,
+        opacity: 0.7
     },
     term3: {
-        term: 'fellowship',
+        term: 'ring',
         color: '#FFA31E',
         shape: 0,
         group: group3,
-        diameter: 8,
+        diameter: 10,
         dynamicDiameter: 0,
-        nCubes: 50,
-        rotation: 1,
-        scale: 1,
-        wireframe: false
+        nCubes: 1,
+        rotation: 0,
+        randomizedScale: false,
+        scale: 2.5,
+        opacity: 1.0
     },
     saveTerms() {
         saveTerms()
@@ -319,12 +340,13 @@ const animation = () => {
     controls.update()
 
     // Animate Terms
-    // Term 2
+    // Term 3
+    group3.rotation.y = elapsedTime * 0.5
 
     // Rotate Camera
     if (uiObj.rotateCamera) {
-        camera.position.x = Math.sin(elapsedTime * 0.1) * 27
-        camera.position.z = Math.cos(elapsedTime * 0.1) * 27
+        camera.position.x = Math.sin(elapsedTime * 0.1) * 32
+        camera.position.z = Math.cos(elapsedTime * 0.1) * 32
         camera.position.y = 10
         camera.lookAt(0, 0, 0)
     }
